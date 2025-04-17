@@ -1,0 +1,21 @@
+
+python3 make_gazebo_model.py -i ~/XTDrone/sensing/object_detection_and_tracking/apriltag/image -g ~/.gazebo/models -s 180 -w 0
+
+roslaunch px4 outdoor2_precision_landing.launch
+
+cd ~/XTDrone/communication
+bash multi_vehicle_communication.sh
+
+cd ~/XTDrone/sensing/pose_ground_truth/
+python get_local_pose.py iris 3 #获取坐标真值
+
+cd ~/XTDrone/control/keyboard
+python multirotor_keyboard_control.py iris 3 vel #键盘控制
+
+roslaunch apriltag_ros xtdrone_detection.launch
+
+cd ~/XTDrone/sensing/object_detection_and_tracking/apriltag/apriltag_ros/config
+rviz -d rviz.rviz
+
+cd ~/XTDrone/control/
+bash multi_precision_landing.sh 
